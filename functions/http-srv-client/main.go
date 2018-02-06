@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"strings"
+	"time"
 
 	apex "github.com/apex/go-apex"
 )
@@ -37,18 +39,31 @@ func main() {
 
 			return nil, nil
 		}
-		c := http.Client{
+		c1 := http.Client{
 			Transport: tr,
 		}
-		req, _ := http.NewRequest("GET", "http://test.some.cloud", nil)
-		r, err := c.Do(req)
+		req, _ := http.NewRequest("GET", "http://test.mmg.cloud", nil)
+		start := time.Now()
+		r1, err := c1.Do(req)
 		if err != nil {
 			return err, nil
 		}
-		defer r.Body.Close()
+		log.Printf("CUSTOM CLIENT TIME: %v\n", time.Since(start))
+		defer r1.Body.Close()
+		buf1 := new(bytes.Buffer)
+		buf1.ReadFrom(r1.Body)
 
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(r.Body)
-		return buf.String(), nil
+		c2 := http.Client{}
+		start = time.Now()
+		r2, err := c2.Do(req)
+		if err != nil {
+			return err, nil
+		}
+		log.Printf("DEFAULT CLIENT TIME: %v\n", time.Since(start))
+		defer r2.Body.Close()
+
+		buf2 := new(bytes.Buffer)
+		buf2.ReadFrom(r2.Body)
+		return buf1.String() + " " + buf2.String(), nil
 	})
 }
