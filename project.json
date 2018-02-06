@@ -1,0 +1,12 @@
+{
+  "name": "http-srv-client",
+  "description": "",
+  "memory": 128,
+  "timeout": 5,
+  "role": "",
+  "environment": {},
+  "vpc": {
+    "securityGroups": [""],
+    "subnets": ["",""]
+  }
+}
