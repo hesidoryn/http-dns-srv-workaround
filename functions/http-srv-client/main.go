@@ -28,7 +28,7 @@ func main() {
 				res := results[i]
 				ip, port := strings.TrimRight(res.Target, "."), res.Port
 				address := fmt.Sprintf("%v:%v", ip, port)
-				conn, err := net.Dial(network, address)
+				conn, err := net.DialTimeout(network, address, 50*time.Millisecond)
 				if err == nil {
 					return conn, nil
 				}
